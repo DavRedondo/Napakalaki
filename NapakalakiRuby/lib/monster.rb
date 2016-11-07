@@ -15,8 +15,9 @@ class Monster
   attr_accessor :name, :combatLevel, :premio, :rol
   
 def to_s
-  "Nombre: #{@name}\nNivel de combate: #{@combatLevel}\n
-Premio: #{@premio}\nRol: #{@rol}"
+  # "Nombre: #{@name}\n"
+  "Nombre: #{@name}\nNivel de combate:#{@combatLevel}\nPremio: #{@premio}\nRol:#{@rol}"
+
 end
   
 end

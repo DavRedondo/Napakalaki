@@ -50,6 +50,7 @@ public class Monster {
     
     @Override
     public String toString() {
+        // return name
         return "Monster{" + "name=" + name + ", combatLevel=" + combatLevel + ", premio=" + premio + ", rol=" + rol + '}';
     }
 

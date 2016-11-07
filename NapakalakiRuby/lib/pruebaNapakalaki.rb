@@ -149,22 +149,78 @@ class PruebaNapakalaki
     output = Array.new
     for monstruo in @@monsters
       if monstruo.combatLevel > 10
-          output << Monster.new(monstruo.name, monstruo.combatLevel, monstruo.premio, monstruo.rol)
+          output << monstruo
+      end
+    end
+    return output
+  end
+  
+
+  def PruebaNapakalaki.PierdeNivel()
+    output = Array.new
+    for monstruo in @@monsters
+      if
+        monstruo.rol.death == false &&
+        monstruo.rol.levels > 0 && 
+        monstruo.rol.specificHiddenTreasures.empty? &&
+        monstruo.rol.specificVisibleTreasures.empty? &&
+        monstruo.rol.nVisibleTreasures == 0 &&
+        monstruo.rol.nHiddenTreasures == 0
+            output << monstruo
+      
+      end
+      
+    end
+    return output
+    
+    
+  end
+  
+  
+  def PruebaNapakalaki.LevelSup1()
+    output = Array.new
+    for monstruo in @@monsters
+      if monstruo.premio.levels > 1
+        output << monstruo
+      end
+    end
+    return output
+    
+  end
+  
+  def PruebaNapakalaki.PierdeTesoro(tipo)
+    output = Array.new
+    for monstruo in @@monsters
+      encontrado = false
+      i=0
+      while i<monstruo.rol.specificHiddenTreasures.size() && !encontrado
+        encontrado=tipo==monstruo.rol.specificHiddenTreasures[i]
+         i+=1
+      end
+      i=0
+      if !encontrado
+        while i<monstruo.rol.specificVisibleTreasures.size() && !encontrado
+          encontrado = tipo==monstruo.rol.specificVisibleTreasures[i]
+          i+=1
+        end
+      end
+      if encontrado
+        output << monstruo
       end
     end
     return output
   end
   
   
-  def PruebaNapakalaki.PierdeNivel()
+  def PruebaNapakalaki.LevelSup1()
     output = Array.new
     for monstruo in @@monsters
-      
+      if monstruo.premio.level > 1
+        output << monstruo
+      end
     end
-    
+    return output
   end
-  
-  
   
   prueba = Array.new
  
@@ -180,34 +236,42 @@ class PruebaNapakalaki
     puts monstruo
   end
   
+  
+  puts "Los monstruos que su mal rollo supone pérdida de una mano son: "
+  prueba = PierdeTesoro(TreasureKind::ONEHAND)
+  for monstruo in prueba
+    puts monstruo
+  end
+  
+  puts "Los monstruos que su mal rollo supone pérdida de armadura son: "
+  prueba = PierdeTesoro(TreasureKind::ARMOR)
+  for monstruo in prueba
+    puts monstruo
+  end
+  
+  puts "Los monstruos que su mal rollo supone pérdida de casco son: "
+  prueba = PierdeTesoro(TreasureKind::HELMET)
+  for monstruo in prueba
+    puts monstruo
+  end
+  
+  puts "Los monstruos que su mal rollo supone pérdida de zapatos son: "
+  prueba = PierdeTesoro(TreasureKind::SHOES)
+  for monstruo in prueba
+    puts monstruo
+  end
+  
+    puts "Los monstruos que su mal rollo supone pérdida de dos manos son: "
+  prueba = PierdeTesoro(TreasureKind::BOTHHANDS)
+  for monstruo in prueba
+    puts monstruo
+  end
+  
   puts "Los monstruos que su buen rollo indica ganancia de nivel superior a 10 son: "
     prueba = LevelSup1()
     for monstruo in prueba
       puts monstruo
     end
   
-  puts "Los monstruos que su mal rollo supone pérdida de tesoro son: "
-  prueba = PierdeTesoro(ONEHAND)
-  for monstruo in prueba
-    puts monstruo
-  end
   
-  prueba = PierdeTesoro(ARMOR)
-  for monstruo in prueba
-    puts monstruo
-  end
-  
-  prueba = PierdeTesoro(HELMET)
-  for monstruo in prueba
-    puts monstruo
-  end
-  
-  prueba = PierdeTesoro(SHOES)
-  for monstruo in prueba
-    puts monstruo
-  end
-  
-  
-  
-  
-end
+end  

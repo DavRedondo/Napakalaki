@@ -16,7 +16,7 @@ someSpecificVisibleTreasures, someSpecificHiddenTreasures, death)
     @specificHiddenTreasures = someSpecificHiddenTreasures 
   end
   
-  attr_accessor :text, :levels, :nVisibleTreasures, :nHiddenTreasures, :death
+  attr_accessor :text, :levels, :nVisibleTreasures, :nHiddenTreasures, :death, :specificVisibleTreasures, :specificHiddenTreasures
   
 def to_s
   "Texto: #{@text}\nNiveles perdidos: #{@levels}\n
@@ -26,7 +26,7 @@ Death: #{@death}"
 end
 
 def BadConsequence.newLevelNumberOfTreasures (aText, someLevels, someVisibleTreasures, someHiddenTreasures)
- new(aText, someLevels, someVisibleTreasures, someHiddenTreasures, nil, nil, false)
+ new(aText, someLevels, someVisibleTreasures, someHiddenTreasures, Array.new, Array.new, false)
 end
 
 def BadConsequence.newLevelSpecificTreasures (aText, someLevels, someSpecificVisibleTreasures, someSpecificHiddenTreasures)
@@ -34,7 +34,7 @@ def BadConsequence.newLevelSpecificTreasures (aText, someLevels, someSpecificVis
 end 
 
 def BadConsequence.newDeath (aText) 
-  new(aText, 0, 0, 0, nil, nil, true)
+  new(aText, 0, 0, 0, Array.new, Array.new, true)
 end
 
 end

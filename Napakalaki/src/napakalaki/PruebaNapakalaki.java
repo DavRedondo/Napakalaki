@@ -33,21 +33,19 @@ public class PruebaNapakalaki {
         return output;
     }
     
-    static ArrayList<Monster> PierdeNivel() {
+    static ArrayList<Monster> PierdeNivel(){
         ArrayList<Monster> output = new ArrayList();
-        for (Monster monstruo : monstruos) {
-            if (monstruo.getRol().isDeath() == false &&
-                monstruo.getRol().getLevels() > 0 &&
-                monstruo.getRol().getSpecificHiddenTreasures() == null &&
-                monstruo.getRol().getSpecificVisibleTreasures() == null &&
-                monstruo.getRol().getnHiddenTreasures() == 0 &&
-                monstruo.getRol().getnVisibleTreasures() == 0) {
-                    output.add(monstruo);
-                
-            }
+        for(Monster monstruo : monstruos){
+            if(
+                    monstruo.getRol().getLevels() > 0 &&
+                    monstruo.getRol().getSpecificHiddenTreasures().isEmpty() &&
+                    monstruo.getRol().getSpecificVisibleTreasures().isEmpty() &&
+                    monstruo.getRol().isDeath() == false &&
+                    monstruo.getRol().getnVisibleTreasures() == 0 &&
+                    monstruo.getRol().getnHiddenTreasures() == 0)
+                    output.add(monstruo); 
             
-        }
-        return output;
+        } return output ;
     }
     
     static ArrayList<Monster> LevelSup1() {
@@ -72,9 +70,14 @@ public class PruebaNapakalaki {
                 for(int i=0; i < monstruo.getRol().getSpecificVisibleTreasures().size() && !encontrado; i++)
                     encontrado = monstruo.getRol().getSpecificVisibleTreasures().get(i) == tipo;
             }
+            if(encontrado) 
+                output.add(monstruo);
+            
         }
         return output;
     }
+        
+    
             
             
     public static void main(String[] args) {
@@ -110,7 +113,7 @@ public class PruebaNapakalaki {
         
         // El sopor de Dunwich
         badConsequence = new BadConsequence("El primordial bostezo contagioso. "
-                + "Pierdes el calzado visible", 0, new ArrayList(Arrays.asList(TreasureKind.BOTHHANDS)), 
+                + "Pierdes el calzado visible", 0, new ArrayList(Arrays.asList(TreasureKind.SHOES)), 
                 new ArrayList());
         prize = new Prize(1, 1);
         monstruos.add(new Monster("El sopor de Dunwich", 2, badConsequence, prize));
@@ -250,6 +253,8 @@ public class PruebaNapakalaki {
        System.out.println ("Los monstruos que tienen un nivel de combate mayor a 10 son:  \n");
        prueba = Combat10();
        for(Monster monstruos : prueba)        
+           System.out.println(monstruos);
+       
        System.out.println ("Los monstruos que su buen rollo indica que ganan mas de un nivel son:  \n");
        prueba = LevelSup1();
        for(Monster monstruos : prueba) 

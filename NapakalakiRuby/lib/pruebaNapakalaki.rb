@@ -158,6 +158,9 @@ class PruebaNapakalaki
   
   def PruebaNapakalaki.PierdeNivel()
     output = Array.new
+    for monstruo in @@monsters
+      
+    end
     
   end
   

@@ -5,11 +5,11 @@
 
 
 module TreasureKind
-  ARMOR =:armor
-  ONEHAND =:onehand
-  BOTHHANDS =:bothhands
-  HELMET =:helmet
-  SHOES =:shoes
+  ARMOR =:ARMOR
+  ONEHAND =:ONEHAND
+  BOTHHANDS =:BOTHHANDS
+  HELMET =:HELMET
+  SHOES =:SHOES
   
   # para acceder a cada uno de ellos lo hacemos de esta forma: TrearureKind::ARMOR
   

@@ -52,6 +52,7 @@ class CardDealer
            Treasure.new("Mazo de los antiguos", 3, [TreasureKind::ONEHAND]),
            Treasure.new("Necro-playboycón", 3, [TreasureKind::ONEHAND]),
            Treasure.new("Porra preternatural", 2, [TreasureKind::ONEHAND])]
+           shuffleTreasures()
   end
   
   
@@ -186,6 +187,7 @@ class CardDealer
     escaquear. Pierdes una mano visible", 0, [TreasureKind::ONEHAND], Array.new)
     @unusedMonsters<< Monster.new("Dameargo", 1, prize, badconsequence)
 
+    shuffleMonsters()
 
   end  
 
@@ -204,19 +206,19 @@ class CardDealer
       shuffleTreasures()
       @usedTreasures = Array.new 
     end
-    salida = @unusedTreasures.at(0)
-    @unusedTreasures.delete(0)
+    salida = @unusedTreasures[0]
+    @unusedTreasures.delete_at(0)
     return salida
   end
 
   def nextMonster()
     if @unusedMonsters.empty?
       @unusedMonsters = @usedMonsters
-      shuffleMonsters()
+      self.shuffleMonsters()
       @usedMonsters = Array.new 
     end
     salida = @unusedMonsters.at(0)
-    @unusedMonsters.delete(0)
+    @unusedMonsters.delete_at(0)
     return salida
   end
 

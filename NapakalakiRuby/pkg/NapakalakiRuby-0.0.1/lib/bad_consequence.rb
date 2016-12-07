@@ -47,7 +47,7 @@ class BadConsequence
   end 
 
   def BadConsequence.newDeath (aText) 
-    new(aText, 10, @@MAXTREASURES, @@MAXTREASURES, Array.new, Array.new, true)
+    new(aText, Player.getMaxLevel(), @@MAXTREASURES, @@MAXTREASURES, Array.new, Array.new, true)
   end
 
   def isDeath()
@@ -55,16 +55,16 @@ class BadConsequence
   end
 
   def getSpecificVisibleTreasures()
-    return specificVisibleTreasures;
+    return @specificVisibleTreasures;
   end
 
   def getSpecificHiddenTreasures()
-    return specificHiddenTreasures
+    return @specificHiddenTreasures
   end
 
   def isEmpty?
-    if nVisibleTreasures == 0 and nHiddenTreasures == 0 and
-        specificVisibleTreasures.empty? and specificHiddenTreasures.empty?
+    if @nVisibleTreasures == 0 and @nHiddenTreasures == 0 and
+        @specificVisibleTreasures.empty? and @specificHiddenTreasures.empty?
       return true
     else 
       return false
@@ -82,13 +82,13 @@ class BadConsequence
 
   def adjustToFitTreasureLists(v, h)
  
-    if death
-      return newDeath(@text)
+    if @death
+      return BadConsequence.newDeath(@text)
     end
     
-    if nVisibleTreasures > 0 || nHiddenTreasures > 0
-      nv = nVisibleTreasures
-      nh = nHiddenTreasures
+    if @nVisibleTreasures > 0 or @nHiddenTreasures > 0
+      nv = @nVisibleTreasures
+      nh = @nHiddenTreasures
       
       if nv > v.size
         nv = v.size
@@ -97,7 +97,7 @@ class BadConsequence
         nh = h.size
       end
       
-      return newLevelNumberOfTreasures(@text, @levels, nv, nh)
+      return BadConsequence.newLevelNumberOfTreasures(@text, @levels, nv, nh)
       
     else 
       
@@ -108,7 +108,7 @@ class BadConsequence
             nuevovisible << new(tipo)
           end
         end
-        break;
+        break
       end
       
       nuevooculto = Array.new
@@ -118,10 +118,10 @@ class BadConsequence
             nuevovisible << new(tipo)
           end
         end
-        break;
+        break
       end
       
-      return newLevelSpecificTreasures(@text, @levels, nuevovisible, nuevooculto)
+      return BadConsequence.newLevelSpecificTreasures(@text, @levels, nuevovisible, nuevooculto)
       
     end
   end

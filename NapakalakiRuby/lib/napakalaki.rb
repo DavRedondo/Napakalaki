@@ -45,16 +45,17 @@ class Napakalaki
   end
   
   def nextPlayer()
+    numero = 0
     if @currentPlayer == nil 
       ngamers = @players.size
       numero = rand(0..ngamers)
     else
       begin 
-        numero = (numero +1) % @players.size
+        numero = (numero + 1) % @players.size
       end while(@players[numero] != @currentPlayer)
       # end while(@players.at(numero) != @currentPlayer)
     end
-    numero = (numero +1) % @players.size
+    numero = (numero + 1) % @players.size
     return @players[numero]
   end
   

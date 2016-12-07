@@ -9,6 +9,8 @@ require_relative 'monster'
 require_relative 'treasure_kind'
 require_relative 'combat_result'
 require_relative 'dice'
+require_relative 'bad_consequence'
+
 
 
 class Player
@@ -38,6 +40,10 @@ class Player
       "#{@name} Nivel #{@level}"
   end
   
+  def self.getMaxLevel()
+    return @@MAXLEVEL
+  end
+  
   
   def bringToLife()
     @dead=false;
@@ -45,28 +51,31 @@ class Player
   
   
   def getCombatLevel() 
-    levelfinal = level
+    levelfinal = @level
     for t in @visibleTreasures
       levelfinal += t.bonus
     end
     return levelfinal
   end
   
-  def incrementLevels(i)
+  def incrementsLevels(i)
     @level+=i
   end
   
   def decrementLevels(i)
     @level-=i
+    if @level <= 0
+      @level=1
+    end
   end
   
   def setPendingBadConsequence(b)
     @pendingBadConsequence=b
   end
   
-  def applyPrize(monster)
+  def applyPrize(m)
     nLevels = m.getLevelsGained()
-    incrementsLevels(nLevels)
+    self.incrementsLevels(nLevels)
     nTreasures = m.getTreasuresGained()
     
     if nTreasures > 0
@@ -82,39 +91,44 @@ class Player
     badConsequence = monster.rol()
     nLevels = badConsequence.levels()
     decrementLevels(nLevels)
-    pendingBad = badConsequence.adjustToFitTreasureList(@visibleTreasures, @hiddenTreasures)
+    pendingBad = badConsequence.adjustToFitTreasureLists(@visibleTreasures, @hiddenTreasures)
     setPendingBadConsequence(pendingBad)
   end
   
   
   def canMakeTreasureVisible(t)
-    for tesoro in @visibleTreasures
-      if tesoro.type == t.type 
-        return false
-      end
-    end
     
-    if t.type == TreasureKind::ONEHAND
+    if t.type == [TreasureKind::ONEHAND]
       onehand = 0
       for tesoro in @visibleTreasures
-        if t.type == TreasureKind::ONEHAND
+        if tesoro.type == [TreasureKind::ONEHAND]
           onehand+=1
+          
         end
-        if t.type == TreasureKind::BOTHHANDS
+        if tesoro.type == [TreasureKind::BOTHHANDS]
+          return false
+        end
+        if onehand == 2
           return false
         end
       end
-      if onehand == 2
-        return false
+      
+    else
+      if t.type == [TreasureKind::BOTHHANDS]
+        for tesoro in @visibleTreasures
+          if tesoro.type == [TreasureKind::ONEHAND]
+            return false
+          end
+        end
       end
-    end
     
-    if t.type == TreasureKind::BOTHHANDS
+    
       for tesoro in @visibleTreasures
-        if tesoro.type == TreasureKind::ONEHAND
+        if tesoro.type == t.type
           return false
         end
       end
+ 
     end
     
     return true
@@ -153,6 +167,11 @@ class Player
         enemyLevel = enemy.getCombatLevel()
         monsterLevel += enemyLevel 
       end
+    end
+    
+    puts "Mi nivel ", @level
+    puts "Mi nivel de combate ", @myLevel
+    puts "Nivel monstruo ", @monsterLevel
     
     
       if myLevel > monsterLevel
@@ -167,8 +186,8 @@ class Player
         return CombatResult::LOSE
       end
     end
-    return CombatResult::LOSE
-  end
+    
+  
   
   
   def makeTreasureVisible(treasure)
@@ -189,10 +208,10 @@ class Player
   end
   
   
-  def discardHiddenTreasur(treasure)
+  def discardHiddenTreasure(treasure)
     hiddenTreasures.delete(treasure)
-    if pendingBadConsequence != nil and (!pendingBadConsequence.isEmpty?)
-      pendingBadConsequence.substractHiddenTreasure(treasure)
+    if @pendingBadConsequence != nil and (!@pendingBadConsequence.isEmpty?)
+      @pendingBadConsequence.substractHiddenTreasure(treasure)
     end
     dielfNoTreasures()
   end
@@ -209,19 +228,19 @@ class Player
   def initTreasures
     dealer = CardDealer.instance
     dice = Dice.instance
-    bringToLife()
+    self.bringToLife()
     treasure = dealer.nextTreasure()
-    hiddenTreasures << treasure
+    @hiddenTreasures << treasure
     number = dice.nextNumber()
     
     if number > 1
       treasure = dealer.nextTreasure()
-      hiddenTreasures << treasure
+      @hiddenTreasures << treasure
     end
     
     if number == 6
       treasure = dealer.nextTreasure()
-      hiddenTreasures << treasure
+      @hiddenTreasures << treasure
     end
     
   end
@@ -231,13 +250,13 @@ class Player
   end
   
   def stealTreasure()
-    canI = canISteal() 
+    canI = self.canISteal() 
     if canI
       canYou = @enemy.canYouGiveMeATreasure()
       if canYou
         treasure = @enemy.giveMeATreasure()
-        hiddenTreasures << treasure
-        haveStolen()
+        @hiddenTreasures << treasure
+        self.haveStolen()
         return treasure
       end
     end
@@ -251,8 +270,8 @@ class Player
   
   def giveMeATreasure()
     numeroAleatorio.rand(0..@hiddenTreasures.size())
-    aux = hiddenTreasures[numeroAleatorio]
-    hiddenTreasures.delete(numeroAleatorio)
+    aux = @hiddenTreasures[numeroAleatorio]
+    @hiddenTreasures.delete_at(numeroAleatorio)
     return aux
   end
   
@@ -262,22 +281,22 @@ class Player
   end
   
   def canYouGiveMeATreasure()
-    return !@hiddenTreasures.isEmpty?
+    return !@hiddenTreasures.empty?
   end
   
   def haveStolen()
-    @canISteal=true
+    @canISteal=false
   end
   
   def discardAllTreasures()
     copia = Array.new(@visibleTreasures)
     for tesoro in copia
-      discardVisibleTreasure(tesoro)
+      self.discardVisibleTreasure(tesoro)
     end
     
     copia = Array.new(@hiddenTreasures)
     for tesoro in copia
-      discardHiddenTreasures(tesoro)
+      self.discardHiddenTreasure(tesoro)
     end
     
   end

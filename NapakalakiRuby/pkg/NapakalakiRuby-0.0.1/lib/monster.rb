@@ -27,11 +27,11 @@ class Monster
   end
 
   def getLevelsGained()
-    return premio.level()
+    return @premio.level()
   end
 
   def getTreasuresGained()
-    return premio.treasures
+    return @premio.treasures
   end
 
 end

@@ -28,7 +28,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return name;
+        return name + "   Nivel " + level;
     }
     
 
@@ -119,28 +119,32 @@ deberá cumplir descartándose de esos tesoros antes de que pueda pasar al sigui
     
 // Comprueba si el tesoro t se puede pasar de oculto a visible según las reglas del juego.
     private boolean canMakeTreasureVisible(Treasure t) {
-        for(Treasure tesoro : visibleTreasures) {
-            if(tesoro.getType() == t.getType())
-                return false;
-        }
         
         if(t.getType() == TreasureKind.ONEHAND) {
             int onehand=0;
             for(Treasure tesoro : visibleTreasures) {
-                if(t.getType() == TreasureKind.ONEHAND)
+                if(tesoro.getType() == TreasureKind.ONEHAND)
                     onehand++;
-                if(t.getType() == TreasureKind.BOTHHANDS)
+                if(tesoro.getType() == TreasureKind.BOTHHANDS)
                     return false;
                 if(onehand == 2)
-                return false;
+                    return false;
             }
             
         }
         
-        if(t.getType() == TreasureKind.BOTHHANDS) {
+        else {
+            if(t.getType() == TreasureKind.BOTHHANDS) {
             for(Treasure tesoro : visibleTreasures)
                 if(tesoro.getType() == TreasureKind.ONEHAND)
                     return false;
+            }
+        
+        
+            for(Treasure tesoro : visibleTreasures) {
+                if(tesoro.getType() == t.getType())
+                    return false;
+            }
         }
         
         return true;
@@ -181,13 +185,19 @@ deberá cumplir descartándose de esos tesoros antes de que pueda pasar al sigui
     public CombatResult combat(Monster m) {
         int myLevel = getCombatLevel();
         int monsterLevel = m.getCombatLevel();
-        if(canISteal) {
+        if(!canISteal) {
             Dice dice = Dice.getInstance();
             int number = dice.nextNumber();
             if(number < 3) {
                 int enemyLevel = enemy.getCombatLevel();
                 monsterLevel += enemyLevel;
             }
+        }
+        
+        System.out.println("Mi nivel " + level);
+        System.out.println("Mi nivel de combate " + myLevel);
+        System.out.println("Nivel monstruo " + monsterLevel);
+
         
         if(myLevel > monsterLevel) {
             applyPrize(m);
@@ -200,8 +210,9 @@ deberá cumplir descartándose de esos tesoros antes de que pueda pasar al sigui
         else {
             applyBadConsequence(m);
             return CombatResult.LOSE;
-        }
-    }return CombatResult.LOSE;
+        
+        } 
+        
     }
     
     
